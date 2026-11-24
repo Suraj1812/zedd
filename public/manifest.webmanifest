@@ -1,0 +1,18 @@
+{
+  "id": "/",
+  "name": "Zedd — Everyday, beautifully connected",
+  "short_name": "Zedd",
+  "description": "A little more room for life. Payments, travel, food and thoughtful finds, together in Zedd.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAFAFC",
+  "theme_color": "#17191F",
+  "lang": "en-AU",
+  "categories": ["lifestyle", "travel", "shopping"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

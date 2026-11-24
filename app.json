@@ -1,25 +1,51 @@
 {
   "expo": {
-    "name": "zedd",
+    "name": "Zedd",
     "slug": "zedd",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/brand/app-icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "com.suraj1812.zedd",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "foregroundImage": "./assets/brand/app-icon.png",
+        "backgroundColor": "#063F32"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.suraj1812.zedd",
+      "versionCode": 1
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./public/favicon.png",
+      "name": "Zedd",
+      "shortName": "Zedd",
+      "description": "Everyday, beautifully connected. Pay, travel, discover.",
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-image",
+      "expo-font",
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/brand/app-icon.png",
+          "imageWidth": 112,
+          "resizeMode": "contain",
+          "backgroundColor": "#063F32"
+        }
+      ]
+    ],
+    "scheme": "zedd",
+    "description": "Everyday, beautifully connected. Pay, travel, discover.",
+    "backgroundColor": "#FAFAFC"
   }
 }

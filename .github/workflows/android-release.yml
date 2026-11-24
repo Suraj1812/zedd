@@ -1,0 +1,42 @@
+name: Build Android APK and publish download
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release tag (for example v1.0.0)
+        required: true
+        default: v1.0.0
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Check release configuration
+        run: |
+          test -n "$EXPO_TOKEN" || { echo 'Add the EXPO_TOKEN repository secret first.'; exit 1; }
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo 'Use a tag such as v1.0.0'; exit 1; }
+          node -e 'const c=require("./app.json");if(!c.expo.extra?.eas?.projectId)throw Error("Initialize the Expo project and Android signing credentials first; see docs/DISTRIBUTION.md.")'
+      - run: npm ci
+      - run: npm run typecheck && npm test
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Build installable signed APK
+        run: eas build --platform android --profile preview --non-interactive --wait --json > build-result.json
+      - name: Download APK and publish release
+        run: |
+          node scripts/download-apk.mjs build-result.json zedd.apk
+          printf 'Zedd for Android\n\nInstall zedd.apk on your Android device.\n\nSource commit: %s\n' "$GITHUB_SHA" > release-notes.txt
+          gh release create "$RELEASE_TAG" zedd.apk --title "Zedd $RELEASE_TAG" --notes-file release-notes.txt --target "$GITHUB_SHA"
