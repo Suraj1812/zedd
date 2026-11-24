@@ -7,6 +7,8 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
+import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Path } from "react-native-svg";
 import { colors as c } from "../theme";
 import { T, useReducedMotion } from "./ui";
@@ -17,6 +19,7 @@ const curve = Easing.bezier(0.19, 1, 0.22, 1);
 export function Launch({ done }: { done: () => void }) {
   const reduced = useReducedMotion();
   const { height } = useWindowDimensions();
+  const [scenery] = useState(() => new Animated.Value(0));
   const [trace] = useState(() => new Animated.Value(0));
   const [fill] = useState(() => new Animated.Value(0));
   const [type] = useState(() => new Animated.Value(0));
@@ -38,7 +41,7 @@ export function Launch({ done }: { done: () => void }) {
         easing: value === trace ? Easing.bezier(0.45, 0, 0.55, 1) : curve,
         useNativeDriver: native && Platform.OS !== "web",
       });
-    const animation = reduced
+    const brandSequence = reduced
       ? timing(exit, 1, 0)
       : Animated.sequence([
           Animated.parallel([
@@ -49,6 +52,10 @@ export function Launch({ done }: { done: () => void }) {
           ]),
           timing(exit, 1, 540, 130),
         ]);
+    const animation = Animated.parallel([
+      brandSequence,
+      timing(scenery, 1, 1990),
+    ]);
     animation.start(({ finished }) => {
       if (active && finished) done();
     });
@@ -56,7 +63,7 @@ export function Launch({ done }: { done: () => void }) {
       active = false;
       animation.stop();
     };
-  }, [trace, fill, type, caption, exit, reduced, done]);
+  }, [trace, fill, type, caption, exit, scenery, reduced, done]);
   return (
     <Animated.View
       accessibilityLabel="Welcome to Zedd"
@@ -76,6 +83,58 @@ export function Launch({ done }: { done: () => void }) {
         },
       ]}
     >
+      <Animated.View
+        pointerEvents="none"
+        accessible={false}
+        style={[
+          StyleSheet.absoluteFill,
+          {
+            opacity: scenery.interpolate({
+              inputRange: [0, 0.2, 1],
+              outputRange: [0, 1, 1],
+            }),
+            transform: [
+              {
+                scale: scenery.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [1.09, 1.025],
+                }),
+              },
+              {
+                translateX: scenery.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [-7, 4],
+                }),
+              },
+              {
+                translateY: scenery.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [6, -3],
+                }),
+              },
+            ],
+          },
+        ]}
+      >
+        <Image
+          source={require("../../assets/editorial/coast.jpg")}
+          contentFit="cover"
+          cachePolicy="memory-disk"
+          style={StyleSheet.absoluteFill}
+        />
+      </Animated.View>
+      <LinearGradient
+        pointerEvents="none"
+        colors={[
+          "rgba(3,38,28,0.48)",
+          "rgba(3,43,31,0.76)",
+          "rgba(3,34,25,0.94)",
+        ]}
+        locations={[0, 0.48, 1]}
+        start={{ x: 0.18, y: 0 }}
+        end={{ x: 0.82, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
       <Animated.View
         style={{
           alignItems: "center",
