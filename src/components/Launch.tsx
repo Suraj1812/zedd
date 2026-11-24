@@ -4,7 +4,6 @@ import {
   Easing,
   Platform,
   StyleSheet,
-  View,
   useWindowDimensions,
 } from "react-native";
 import { Image } from "expo-image";
@@ -18,7 +17,8 @@ const z =
 const curve = Easing.bezier(0.19, 1, 0.22, 1);
 export function Launch({ done }: { done: () => void }) {
   const reduced = useReducedMotion();
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
+  const zoomScale = Math.max(18, Math.hypot(width, height) / 55);
   const [scenery] = useState(() => new Animated.Value(0));
   const [trace] = useState(() => new Animated.Value(0));
   const [fill] = useState(() => new Animated.Value(0));
@@ -38,7 +38,12 @@ export function Launch({ done }: { done: () => void }) {
         toValue,
         duration: reduced ? 0 : duration,
         delay: reduced ? 0 : delay,
-        easing: value === trace ? Easing.bezier(0.45, 0, 0.55, 1) : curve,
+        easing:
+          value === trace
+            ? Easing.bezier(0.45, 0, 0.55, 1)
+            : value === exit
+              ? Easing.bezier(0.65, 0, 0.35, 1)
+              : curve,
         useNativeDriver: native && Platform.OS !== "web",
       });
     const brandSequence = reduced
@@ -50,11 +55,11 @@ export function Launch({ done }: { done: () => void }) {
             timing(type, 1, 460, 760),
             timing(caption, 1, 340, 980),
           ]),
-          timing(exit, 1, 540, 130),
+          timing(exit, 1, 680, 130),
         ]);
     const animation = Animated.parallel([
       brandSequence,
-      timing(scenery, 1, 1990),
+      timing(scenery, 1, 2130),
     ]);
     animation.start(({ finished }) => {
       if (active && finished) done();
@@ -72,14 +77,10 @@ export function Launch({ done }: { done: () => void }) {
         StyleSheet.absoluteFill,
         styles.canvas,
         {
-          transform: [
-            {
-              translateY: exit.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, -height - 30],
-              }),
-            },
-          ],
+          opacity: exit.interpolate({
+            inputRange: [0, 0.76, 1],
+            outputRange: [1, 1, 0],
+          }),
         },
       ]}
     >
@@ -138,21 +139,24 @@ export function Launch({ done }: { done: () => void }) {
       <Animated.View
         style={{
           alignItems: "center",
-          opacity: exit.interpolate({
-            inputRange: [0, 0.5, 1],
-            outputRange: [1, 0.65, 0],
-          }),
-          transform: [
-            {
-              translateY: exit.interpolate({
-                inputRange: [0, 1],
-                outputRange: [-12, height * 0.12],
-              }),
-            },
-          ],
+          transform: [{ translateY: -12 }],
         }}
       >
-        <View style={{ height: 130, width: 144 }}>
+        <Animated.View
+          style={{
+            height: 130,
+            width: 144,
+            zIndex: 10,
+            transform: [
+              {
+                scale: exit.interpolate({
+                  inputRange: [0, 0.16, 0.45, 0.78, 1],
+                  outputRange: [1, 0.94, 2.8, 9, zoomScale],
+                }),
+              },
+            ],
+          }}
+        >
           <Svg width="144" height="130" viewBox="0 0 144 116">
             <AnimatedLogoPath
               d={z}
@@ -171,9 +175,13 @@ export function Launch({ done }: { done: () => void }) {
               <Path d={z} fill="#F4F5EE" />
             </Svg>
           </Animated.View>
-        </View>
-        <View
+        </Animated.View>
+        <Animated.View
           style={{
+            opacity: exit.interpolate({
+              inputRange: [0, 0.22, 1],
+              outputRange: [1, 0, 0],
+            }),
             flexDirection: "row",
             overflow: "hidden",
             height: 88,
@@ -210,8 +218,18 @@ export function Launch({ done }: { done: () => void }) {
               </T>
             </T>
           </Animated.View>
-        </View>
-        <Animated.View style={{ opacity: caption }}>
+        </Animated.View>
+        <Animated.View
+          style={{
+            opacity: Animated.multiply(
+              caption,
+              exit.interpolate({
+                inputRange: [0, 0.18, 1],
+                outputRange: [1, 0, 0],
+              }),
+            ),
+          }}
+        >
           <T
             size={12}
             color="#BBD2C7"
