@@ -10,7 +10,7 @@ import {
 import Svg, { Path } from "react-native-svg";
 import { colors as c } from "../theme";
 import { T, useReducedMotion } from "./ui";
-const AnimatedPath = Animated.createAnimatedComponent(Path);
+import { AnimatedLogoPath } from "./AnimatedLogoPath";
 const z =
   "M29 31 Q29 12 49 12 H117 L63 81 H116 Q116 101 96 101 H29 L84 32 H29 Z";
 const curve = Easing.bezier(0.19, 1, 0.22, 1);
@@ -97,7 +97,7 @@ export function Launch({ done }: { done: () => void }) {
       >
         <View style={{ height: 130, width: 144 }}>
           <Svg width="144" height="130" viewBox="0 0 144 116">
-            <AnimatedPath
+            <AnimatedLogoPath
               d={z}
               stroke="#F4F5EE"
               strokeWidth="1.3"
