@@ -2,6 +2,16 @@
 
 A mobile React Native app for everyday payments, travel, food and shopping. Built with Expo SDK 58 and Expo Router for Android, iOS and a mobile web experience.
 
+## Try the demo
+
+If you want to preview the app in your browser without downloading it, open:
+[Zedd web preview](https://zedd-xi.vercel.app/).
+
+If you want to download and use the app on an Android phone, download the APK here:
+[Download zedd.apk](https://github.com/Suraj1812/zedd/releases/latest/download/zedd.apk).
+
+This is a frontend MVP demo showcasing the design, navigation, and user flows. It is not a complete production app; live payments, bookings, and backend services are not connected yet.
+
 ## Run
 
 ```sh
@@ -13,7 +23,7 @@ Open the Local URL printed by Expo. The website stays within a 430px mobile canv
 
 ## Included
 
-- Original Zedd identity, branded launch, accessible motion and 500ms layout-matched page skeletons.
+- Original Zedd identity, a compact branded launch, accessible motion and immediate local page rendering.
 - Graphite payment card with front/back flip, persistent random display identity, and card controls.
 - Home, Explore, wallet, Activity and Profile navigation.
 - Hotels, restaurants/menus, shopping, marketplace and supporting transport/event/health catalogs.

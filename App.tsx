@@ -1,5 +1,5 @@
 import { LaunchReadyContext } from "./src/components/Loading";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { View, Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Stack, router } from "expo-router";
@@ -161,9 +161,9 @@ export default function App() {
   const [launch, setLaunch] = useState(true);
   const finishLaunch = useCallback(() => setLaunch(false), []);
   const reduced = useReducedMotion();
-  useEffect(() => {
-    if (loaded || error) void SplashScreen.hideAsync();
-  }, [loaded, error]);
+  const revealLaunch = useCallback(() => {
+    void SplashScreen.hideAsync().catch(() => {});
+  }, []);
   if (!loaded && !error)
     return <View style={{ flex: 1, backgroundColor: c.brand }} />;
   return (
@@ -173,7 +173,7 @@ export default function App() {
           style={{
             flex: 1,
             width: "100%",
-            maxWidth: 430,
+            maxWidth: Platform.OS === "web" ? 430 : undefined,
             alignSelf: "center",
             backgroundColor: c.background,
             ...(Platform.OS === "web"
@@ -212,7 +212,7 @@ export default function App() {
                   />
                 ))}
               </Stack>
-              {launch && <Launch done={finishLaunch} />}
+              {launch && <Launch onReady={revealLaunch} done={finishLaunch} />}
             </NoticeProvider>
           </LaunchReadyContext.Provider>
         </View>

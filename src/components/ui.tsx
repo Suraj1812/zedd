@@ -1,4 +1,3 @@
-import { useSkeleton } from "./Loading";
 import React, {
   createContext,
   useContext,
@@ -159,19 +158,7 @@ export function Icon({
   stroke?: number;
   fill?: string;
 }) {
-  const skeleton = useSkeleton();
   const Comp = icons[name] || Compass;
-  if (skeleton)
-    return (
-      <View
-        style={{
-          width: size,
-          height: size,
-          borderRadius: 5,
-          backgroundColor: "#E2E4E9",
-        }}
-      />
-    );
   return <Comp size={size} color={color} strokeWidth={stroke} fill={fill} />;
 }
 export function T({
@@ -190,7 +177,6 @@ export function T({
   numberOfLines?: number;
   accessibilityRole?: "header" | "alert";
 } & Record<string, any>) {
-  const skeleton = useSkeleton();
   return (
     <Text
       {...props}
@@ -202,13 +188,6 @@ export function T({
           lineHeight: size * 1.45,
         },
         style,
-        skeleton
-          ? {
-              color: "transparent",
-              backgroundColor: "#E2E4E9",
-              borderRadius: 5,
-            }
-          : null,
       ]}
     >
       {children}
@@ -242,7 +221,6 @@ export function Tap({
   disabled?: boolean;
   testID?: string;
 }) {
-  const skeleton = useSkeleton();
   const scale = useSharedValue(1);
   const reduced = useReducedMotion();
   const anim = useAnimatedStyle(() => ({
@@ -255,7 +233,7 @@ export function Tap({
         accessibilityRole="button"
         accessibilityLabel={label}
         accessibilityState={{ disabled }}
-        disabled={disabled || skeleton}
+        disabled={disabled}
         onPress={() => {
           haptic();
           onPress?.();
@@ -351,7 +329,6 @@ export function Field({
   style,
   ...props
 }: TextInputProps & { label: string; error?: string; style?: any }) {
-  const skeleton = useSkeleton();
   const [focus, setFocus] = useState(false);
   return (
     <View style={{ gap: 8, marginBottom: 18 }}>
@@ -361,12 +338,11 @@ export function Field({
       <TextInput
         {...props}
         accessibilityLabel={label}
-        placeholderTextColor={skeleton ? "transparent" : "#95A198"}
+        placeholderTextColor="#95A198"
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
         style={[
           s.input,
-          skeleton && { color: "transparent", backgroundColor: "#E2E4E9" },
           { borderColor: error ? c.red : focus ? c.primary : c.line },
           style,
         ]}
@@ -639,9 +615,7 @@ export function Picture({
   style: any;
   accessibilityLabel?: string;
 }) {
-  const skeleton = useSkeleton();
   const [failed, setFailed] = useState(false);
-  if (skeleton) return <View style={[style, { backgroundColor: "#E2E4E9" }]} />;
   return failed ? (
     <View
       style={[
@@ -673,11 +647,10 @@ export function Brand({
   small?: boolean;
   inverse?: boolean;
 }) {
-  const skeleton = useSkeleton();
   return (
     <Row style={{ gap: 9 }}>
       <Image
-        source={skeleton ? undefined : mark}
+        source={mark}
         style={{
           width: small ? 28 : 31,
           height: small ? 28 : 31,

@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Animated,
-  Easing,
-  Platform,
-  StyleSheet,
-  useWindowDimensions,
-} from "react-native";
+import { Animated, Easing, Platform, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Path } from "react-native-svg";
@@ -15,10 +9,15 @@ import { AnimatedLogoPath } from "./AnimatedLogoPath";
 const z =
   "M29 31 Q29 12 49 12 H117 L63 81 H116 Q116 101 96 101 H29 L84 32 H29 Z";
 const curve = Easing.bezier(0.19, 1, 0.22, 1);
-export function Launch({ done }: { done: () => void }) {
+export function Launch({
+  onReady,
+  done,
+}: {
+  onReady: () => void;
+  done: () => void;
+}) {
+  const [imageReady, setImageReady] = useState(false);
   const reduced = useReducedMotion();
-  const { height, width } = useWindowDimensions();
-  const zoomScale = Math.max(18, Math.hypot(width, height) / 55);
   const [scenery] = useState(() => new Animated.Value(0));
   const [trace] = useState(() => new Animated.Value(0));
   const [fill] = useState(() => new Animated.Value(0));
@@ -26,6 +25,8 @@ export function Launch({ done }: { done: () => void }) {
   const [caption] = useState(() => new Animated.Value(0));
   const [exit] = useState(() => new Animated.Value(0));
   useEffect(() => {
+    if (!imageReady) return;
+    onReady();
     let active = true;
     const timing = (
       value: Animated.Value,
@@ -55,11 +56,11 @@ export function Launch({ done }: { done: () => void }) {
             timing(type, 1, 460, 760),
             timing(caption, 1, 340, 980),
           ]),
-          timing(exit, 1, 680, 130),
+          timing(exit, 1, 240, 130),
         ]);
     const animation = Animated.parallel([
       brandSequence,
-      timing(scenery, 1, 2130),
+      timing(scenery, 1, 1690),
     ]);
     animation.start(({ finished }) => {
       if (active && finished) done();
@@ -68,7 +69,18 @@ export function Launch({ done }: { done: () => void }) {
       active = false;
       animation.stop();
     };
-  }, [trace, fill, type, caption, exit, scenery, reduced, done]);
+  }, [
+    trace,
+    fill,
+    type,
+    caption,
+    exit,
+    scenery,
+    reduced,
+    done,
+    imageReady,
+    onReady,
+  ]);
   return (
     <Animated.View
       accessibilityLabel="Welcome to Zedd"
@@ -78,8 +90,8 @@ export function Launch({ done }: { done: () => void }) {
         styles.canvas,
         {
           opacity: exit.interpolate({
-            inputRange: [0, 0.76, 1],
-            outputRange: [1, 1, 0],
+            inputRange: [0, 1],
+            outputRange: [1, 0],
           }),
         },
       ]}
@@ -121,6 +133,8 @@ export function Launch({ done }: { done: () => void }) {
           source={require("../../assets/editorial/coast.jpg")}
           contentFit="cover"
           cachePolicy="memory-disk"
+          onLoad={() => setImageReady(true)}
+          onError={() => setImageReady(true)}
           style={StyleSheet.absoluteFill}
         />
       </Animated.View>
@@ -144,20 +158,12 @@ export function Launch({ done }: { done: () => void }) {
       >
         <Animated.View
           style={{
-            height: 130,
-            width: 144,
+            height: 102,
+            width: 112,
             zIndex: 10,
-            transform: [
-              {
-                scale: exit.interpolate({
-                  inputRange: [0, 0.16, 0.45, 0.78, 1],
-                  outputRange: [1, 0.94, 2.8, 9, zoomScale],
-                }),
-              },
-            ],
           }}
         >
-          <Svg width="144" height="130" viewBox="0 0 144 116">
+          <Svg width="112" height="102" viewBox="0 0 144 116">
             <AnimatedLogoPath
               d={z}
               stroke="#F4F5EE"
@@ -171,7 +177,7 @@ export function Launch({ done }: { done: () => void }) {
             />
           </Svg>
           <Animated.View style={[StyleSheet.absoluteFill, { opacity: fill }]}>
-            <Svg width="144" height="130" viewBox="0 0 144 116">
+            <Svg width="112" height="102" viewBox="0 0 144 116">
               <Path d={z} fill="#F4F5EE" />
             </Svg>
           </Animated.View>
@@ -184,8 +190,8 @@ export function Launch({ done }: { done: () => void }) {
             }),
             flexDirection: "row",
             overflow: "hidden",
-            height: 88,
-            marginTop: 17,
+            height: 66,
+            marginTop: 12,
           }}
         >
           <Animated.View
@@ -202,17 +208,17 @@ export function Launch({ done }: { done: () => void }) {
             }}
           >
             <T
-              size={62}
+              size={44}
               weight="heavy"
               color="#F4F5EE"
-              style={{ letterSpacing: -3.8, lineHeight: 82 }}
+              style={{ letterSpacing: -2.6, lineHeight: 60 }}
             >
               zedd
               <T
-                size={62}
+                size={44}
                 weight="heavy"
                 color="#B7D4BA"
-                style={{ letterSpacing: -3.8, lineHeight: 82 }}
+                style={{ letterSpacing: -2.6, lineHeight: 60 }}
               >
                 .
               </T>

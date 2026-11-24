@@ -1,4 +1,3 @@
-import { useSkeleton } from "./Loading";
 import React, { useState } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -69,7 +68,6 @@ function SecurityPattern() {
   );
 }
 export function PaymentCard() {
-  const skeleton = useSkeleton();
   const name = useApp((s) => s.name);
   const frozen = useApp((s) => s.cardFrozen);
   const card = useApp((s) => s.card);
@@ -100,12 +98,6 @@ export function PaymentCard() {
       }),
     );
   };
-  if (skeleton)
-    return (
-      <View
-        style={[styles.stage, { backgroundColor: "#E2E4E9", borderRadius: 16 }]}
-      />
-    );
   return (
     <Pressable
       accessibilityRole="button"
