@@ -46,6 +46,17 @@
     ],
     "scheme": "zedd",
     "description": "Everyday, beautifully connected. Pay, travel, discover.",
-    "backgroundColor": "#FAFAFC"
+    "backgroundColor": "#FAFAFC",
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "28f14a8e-4d21-4a20-a2ca-5150c32aef01"
+      }
+    },
+    "owner": "suraj01812"
   }
 }
