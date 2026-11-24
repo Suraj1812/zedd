@@ -15,8 +15,8 @@ if (candidate) {
   const safeOrigin = escape(origin);
   let html = await readFile("dist/index.html", "utf8");
   html = html.replaceAll(
-    'content="/social-card.png"',
-    `content="${safeOrigin}/social-card.png"`,
+    'content="/social-card-v2.png"',
+    `content="${safeOrigin}/social-card-v2.png"`,
   );
   html = html.replace(
     "</head>",

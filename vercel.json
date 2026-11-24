@@ -6,7 +6,7 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
-      "source": "/((?!_expo/|assets/|favicon.png|apple-touch-icon.png|icon-192.png|icon-512.png|social-card.png|manifest.webmanifest|robots.txt).*)",
+      "source": "/((?!_expo/|assets/|favicon.png|apple-touch-icon.png|icon-192.png|icon-512.png|social-card.png|social-card-v2.png|manifest.webmanifest|robots.txt).*)",
       "destination": "/index.html"
     }
   ],
