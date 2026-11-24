@@ -21,6 +21,7 @@ export function Launch({ done }: { done: () => void }) {
   const [fill] = useState(() => new Animated.Value(0));
   const [settle] = useState(() => new Animated.Value(0));
   const [type] = useState(() => new Animated.Value(0));
+  const [caption] = useState(() => new Animated.Value(0));
   const [exit] = useState(() => new Animated.Value(0));
   useEffect(() => {
     let active = true;
@@ -42,12 +43,13 @@ export function Launch({ done }: { done: () => void }) {
       ? timing(exit, 1, 0)
       : Animated.sequence([
           Animated.parallel([
-            timing(trace, 1, 840, 0, false),
-            timing(fill, 1, 440, 510),
-            timing(settle, 1, 1000),
-            timing(type, 1, 650, 760),
+            timing(trace, 1, 820, 0, false),
+            timing(fill, 1, 420, 470),
+            timing(settle, 1, 960),
+            timing(type, 1, 620, 690),
+            timing(caption, 1, 420, 1000),
           ]),
-          timing(exit, 1, 620, 140),
+          timing(exit, 1, 540, 110),
         ]);
     animation.start(({ finished }) => {
       if (active && finished) done();
@@ -56,7 +58,7 @@ export function Launch({ done }: { done: () => void }) {
       active = false;
       animation.stop();
     };
-  }, [trace, fill, settle, type, exit, reduced, done]);
+  }, [trace, fill, settle, type, caption, exit, reduced, done]);
   return (
     <Animated.View
       accessibilityLabel="Welcome to Zedd"
@@ -83,13 +85,13 @@ export function Launch({ done }: { done: () => void }) {
             {
               translateY: settle.interpolate({
                 inputRange: [0, 1],
-                outputRange: [25, -18],
+                outputRange: [16, -12],
               }),
             },
             {
               scale: settle.interpolate({
-                inputRange: [0, 1],
-                outputRange: [1.18, 1],
+                inputRange: [0, 0.76, 1],
+                outputRange: [0.97, 1.008, 1],
               }),
             },
           ],
@@ -135,7 +137,7 @@ export function Launch({ done }: { done: () => void }) {
                   {
                     translateY: type.interpolate({
                       inputRange: [0, i * 0.1 + 0.12, 1],
-                      outputRange: [78, 78, 0],
+                      outputRange: [48, 48, 0],
                     }),
                   },
                 ],
@@ -154,12 +156,12 @@ export function Launch({ done }: { done: () => void }) {
         </View>
         <Animated.View
           style={{
-            opacity: type,
+            opacity: caption,
             transform: [
               {
-                translateY: type.interpolate({
+                translateY: caption.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [10, 0],
+                  outputRange: [6, 0],
                 }),
               },
             ],
@@ -173,27 +175,6 @@ export function Launch({ done }: { done: () => void }) {
             Everyday, beautifully connected.
           </T>
         </Animated.View>
-      </Animated.View>
-      <Animated.View
-        style={{ position: "absolute", bottom: 55, opacity: type }}
-      >
-        <View
-          style={{
-            height: 1,
-            width: 32,
-            backgroundColor: "#87AB95",
-            alignSelf: "center",
-            marginBottom: 12,
-          }}
-        />
-        <T
-          color="#8FB29F"
-          size={9}
-          weight="medium"
-          style={{ letterSpacing: 2.4 }}
-        >
-          PAY. TRAVEL. DISCOVER.
-        </T>
       </Animated.View>
     </Animated.View>
   );
