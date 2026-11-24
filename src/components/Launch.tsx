@@ -19,7 +19,6 @@ export function Launch({ done }: { done: () => void }) {
   const { height } = useWindowDimensions();
   const [trace] = useState(() => new Animated.Value(0));
   const [fill] = useState(() => new Animated.Value(0));
-  const [settle] = useState(() => new Animated.Value(0));
   const [type] = useState(() => new Animated.Value(0));
   const [caption] = useState(() => new Animated.Value(0));
   const [exit] = useState(() => new Animated.Value(0));
@@ -36,20 +35,19 @@ export function Launch({ done }: { done: () => void }) {
         toValue,
         duration: reduced ? 0 : duration,
         delay: reduced ? 0 : delay,
-        easing: curve,
+        easing: value === trace ? Easing.bezier(0.45, 0, 0.55, 1) : curve,
         useNativeDriver: native && Platform.OS !== "web",
       });
     const animation = reduced
       ? timing(exit, 1, 0)
       : Animated.sequence([
           Animated.parallel([
-            timing(trace, 1, 820, 0, false),
-            timing(fill, 1, 420, 470),
-            timing(settle, 1, 960),
-            timing(type, 1, 620, 690),
-            timing(caption, 1, 420, 1000),
+            timing(trace, 1, 760, 0, false),
+            timing(fill, 1, 340, 540),
+            timing(type, 1, 460, 760),
+            timing(caption, 1, 340, 980),
           ]),
-          timing(exit, 1, 540, 110),
+          timing(exit, 1, 540, 130),
         ]);
     animation.start(({ finished }) => {
       if (active && finished) done();
@@ -58,7 +56,7 @@ export function Launch({ done }: { done: () => void }) {
       active = false;
       animation.stop();
     };
-  }, [trace, fill, settle, type, caption, exit, reduced, done]);
+  }, [trace, fill, type, caption, exit, reduced, done]);
   return (
     <Animated.View
       accessibilityLabel="Welcome to Zedd"
@@ -81,17 +79,15 @@ export function Launch({ done }: { done: () => void }) {
       <Animated.View
         style={{
           alignItems: "center",
+          opacity: exit.interpolate({
+            inputRange: [0, 0.5, 1],
+            outputRange: [1, 0.65, 0],
+          }),
           transform: [
             {
-              translateY: settle.interpolate({
+              translateY: exit.interpolate({
                 inputRange: [0, 1],
-                outputRange: [16, -12],
-              }),
-            },
-            {
-              scale: settle.interpolate({
-                inputRange: [0, 0.76, 1],
-                outputRange: [0.97, 1.008, 1],
+                outputRange: [-12, height * 0.12],
               }),
             },
           ],
@@ -125,48 +121,38 @@ export function Launch({ done }: { done: () => void }) {
             marginTop: 17,
           }}
         >
-          {["z", "e", "d", "d", "."].map((letter, i) => (
-            <Animated.View
-              key={i}
-              style={{
-                opacity: type.interpolate({
-                  inputRange: [0, i * 0.1 + 0.12, 1],
-                  outputRange: [0, 0, 1],
-                }),
-                transform: [
-                  {
-                    translateY: type.interpolate({
-                      inputRange: [0, i * 0.1 + 0.12, 1],
-                      outputRange: [48, 48, 0],
-                    }),
-                  },
-                ],
-              }}
+          <Animated.View
+            style={{
+              opacity: type,
+              transform: [
+                {
+                  translateY: type.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [22, 0],
+                  }),
+                },
+              ],
+            }}
+          >
+            <T
+              size={62}
+              weight="heavy"
+              color="#F4F5EE"
+              style={{ letterSpacing: -3.8, lineHeight: 82 }}
             >
+              zedd
               <T
                 size={62}
                 weight="heavy"
-                color={letter === "." ? "#B7D4BA" : "#F4F5EE"}
+                color="#B7D4BA"
                 style={{ letterSpacing: -3.8, lineHeight: 82 }}
               >
-                {letter}
+                .
               </T>
-            </Animated.View>
-          ))}
+            </T>
+          </Animated.View>
         </View>
-        <Animated.View
-          style={{
-            opacity: caption,
-            transform: [
-              {
-                translateY: caption.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [6, 0],
-                }),
-              },
-            ],
-          }}
-        >
+        <Animated.View style={{ opacity: caption }}>
           <T
             size={12}
             color="#BBD2C7"
